@@ -4,9 +4,9 @@ namespace DataModel
 {
     public enum UserState
     {
-        Active = 0,
+        Clicked = 0,
+        Active,
         Inactive,
-        Clicked,
     };
 
     class User

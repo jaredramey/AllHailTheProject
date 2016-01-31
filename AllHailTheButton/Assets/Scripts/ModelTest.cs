@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using DataModel;
 
 public class ModelTest : MonoBehaviour
 {
@@ -24,7 +25,7 @@ public class ModelTest : MonoBehaviour
     IEnumerator RunModel()
     {
         const uint c_uNumIterations = 1000;
-        DataModel.ITimeControlledObject model = new DataModel.Model();
+        ITimeControlledObject model = new Model();
         for (uint i = 0; i < c_uNumIterations; i++)
         {
             model.Trigger();
