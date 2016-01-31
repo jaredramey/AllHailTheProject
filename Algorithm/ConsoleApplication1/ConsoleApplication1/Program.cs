@@ -8,7 +8,7 @@ namespace ConsoleApplication1
 {
     class Program
     {
-        private const uint c_uNumIterations = 100;
+        private const uint c_uNumIterations = 1000;
         static void Main(string[] args)
         {
             ITimeControlledObject model = new Model();

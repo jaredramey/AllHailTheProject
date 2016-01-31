@@ -15,7 +15,7 @@ namespace ConsoleApplication1
     class Model : ITimeControlledObject
     {
         private List<User> _users;
-        private const uint c_uInitialUsers = 100;
+        private const uint c_uInitialUsers = 1000;
 
         public Model()
         {
@@ -49,11 +49,17 @@ namespace ConsoleApplication1
 
         private void _AddUsers()
         {
-
+            uint uNewUsers = (uint) (_users.Count * Probabilities.s_pNewUser * (((double) _uLottery) / _uLotteryTotal) * (_cIterations / Math.Pow(_cIterations, Probabilities.s_pInterestDecay)));
+            
+            for (uint i = 0; i < uNewUsers; i++)
+            {
+                _users.Add(new User((Team) (i % 2)));
+            }
         }
 
         private void _UpdateUI(IterationData data)
         {
+            Console.WriteLine(_users.Count);
             Console.Write(data.uIteration + "\t");
             Console.Write(data.uThreshold + "\t");
 
@@ -73,30 +79,58 @@ namespace ConsoleApplication1
             bool fLossCondition = false;
 
             // Here we'll assume there's two teams.
-            if (data.GetData(Team.Blue, UserState.Clicked) < _uThreshold)
+
+            bool fBlueLoss = data.GetData(Team.Blue, UserState.Clicked) < _uThreshold;
+            bool fRedLoss = data.GetData(Team.Red, UserState.Clicked) < _uThreshold;
+            if (fBlueLoss && fRedLoss)
             {
-                if (data.GetData(Team.Blue, UserState.Clicked) < _uThreshold)
-                {
-                    // Both teams lose
-                    // Grow the lottery even more, keep the threshold the same
-                    _uLottery = (uint) (c_dLotteryLossGrowth * _uLottery);
-                }
-                else
-                {
-                    // Red wins!
-                    
-                }
+                // Both teams lose
+                // Grow the lottery even more, keep the threshold the same
+                _uLottery = (uint)(_uLottery * c_dLotteryGrowth);
+            }
+            else if (fRedLoss)
+            {
+                // Blue wins
+                _uBlueScore += _uLottery;
+                _ResetGame();
 
             }
+            else if (fBlueLoss)
+            {
+                // Red wins
+                _uRedScore += _uLottery;
+                _ResetGame();
+            }
+            else
+            {
+                // No winner
+                _uThreshold = (uint) Math.Ceiling(_uThreshold * c_dThresholdGrowth);
+            }
+
+            // Update the total lottery
+            _uLotteryTotal += _uLottery;
         }
 
-        private uint _cIterations = 0;
-        private uint _uLottery = 0;
-        private uint _uThreshold = 0;
+        private void _ResetGame()
+        {
+            _uThreshold = c_uThresholdStart;
+            _uLottery = c_uLotteryStart;
+        }
 
-
-        private const double c_dLotteryGrowth = 1.25;
+        private uint _cIterations = 1;
+        private uint _uLottery = c_uLotteryStart;
+        private uint _uThreshold = c_uThresholdStart;
+        
+        private const double c_dLotteryGrowth = 1.5;
         private const double c_dLotteryLossGrowth = 1.75;
         private const double c_dThresholdGrowth = 1.25;
+
+        private uint _uRedScore = 0;
+        private uint _uBlueScore = 0;
+
+        private const uint c_uLotteryStart = 5;
+        private const uint c_uThresholdStart = 2;
+
+        private uint _uLotteryTotal = c_uLotteryStart;
     }
 }
