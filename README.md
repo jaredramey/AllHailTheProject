@@ -7,3 +7,8 @@ Giving Credit where Credit is Due:
 			-> http://kenney.nl/assets?q=2d
 		= Johnthan for the Cellphone base
 			-> https://pixabay.com/en/cell-phone-mobile-phone-android-718902/
+			
+## Note To be aware of:
+All Hail The Button is NSFW as of the end of GGJ16. We were not able to get all of the server side goals done so we
+were not able to get a functioning game. So in order to get something done, we created a demo that could show off 
+what we were trying to do and show the prrof of concept.
