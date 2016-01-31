@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConsoleApplication1
+namespace DataModel
 {
     class IterationData
     {

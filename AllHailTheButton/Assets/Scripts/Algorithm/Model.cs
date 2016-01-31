@@ -1,26 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 
-enum Team
+namespace DataModel
 {
-    Red = 0,
-    Blue,
-}
+    enum Team
+    {
+        Red = 0,
+        Blue,
+    }
 
-namespace ConsoleApplication1
-{
     class Model : ITimeControlledObject
     {
         private List<User> _users;
         private const uint c_uInitialUsers = 1000;
-
+        
         public Model()
         {
+            // Initialize the user list with the initial batch of users
             _users = new List<User>();
             for (uint i = 0; i < c_uInitialUsers; i++)
             {
                 _users.Add(new User((Team) (i % 2)));
             }
+
+            // Initialize the UI Controller that'll handle the translation
+            // of data objects to the UI layer
+            UiController.Intialize();
         }
         
         // ITimeControlledObject
@@ -38,7 +43,7 @@ namespace ConsoleApplication1
                 data.SetData(team, state);
             }
 
-            _UpdateUI(data);
+            UiController.UpdateUI(data);
 
             _UpdateLottery(data);
             _cIterations++;
@@ -52,23 +57,6 @@ namespace ConsoleApplication1
             {
                 _users.Add(new User((Team) (i % 2)));
             }
-        }
-
-        private void _UpdateUI(IterationData data)
-        {
-            Console.WriteLine(_users.Count);
-            Console.Write(data.uIteration + "\t");
-            Console.Write(data.uThreshold + "\t");
-
-            foreach (Team team in Enum.GetValues(typeof(Team)))
-            {
-                foreach (UserState state in Enum.GetValues(typeof(UserState)))
-                {
-                    Console.Write(data.GetData(team, state) + "\t");
-                }
-            }
-
-            Console.WriteLine();
         }
 
         private void _UpdateLottery(IterationData data)
