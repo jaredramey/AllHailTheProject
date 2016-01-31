@@ -11,10 +11,19 @@ public class AlertManager : MonoBehaviour
     public bool alertIsActive = false;
     public GameObject Alert_Symbol;
     public Text Alert_Text;
+    TimeManager timeMan;
+    int eventCount = 0;
+    public int Alert_Time = 1;
+
+    void Awake()
+    {
+    }
 
     // Use this for initialization
     void Start()
     {
+        timeMan = FindObjectOfType<TimeManager>();
+        timeMan.TimeIsUp += Trigger;
     }
 
     // Update is called once per frame
@@ -22,18 +31,27 @@ public class AlertManager : MonoBehaviour
     {
         if(alertIsActive == false)
         {
-            Alert_Symbol.GetComponent<MeshRenderer>().enabled = false;
-            Alert_Text.text = "";
+            Alert_Symbol.SetActive(false);
+            Alert_Text.enabled = false;
         }
         else
         {
-            Alert_Symbol.GetComponent<MeshRenderer>().enabled = true;
-            Alert_Text.text = "";
+            Alert_Symbol.SetActive(true);
+            Alert_Text.enabled = true;
         }
     }
 
-    void CheckTimeManager()
+    private void Trigger(object sender, EventArgs e)
     {
+        StartCoroutine(ResetTrue());
+    }
 
+    private IEnumerator ResetTrue()
+    {
+        alertIsActive = !alertIsActive;
+
+        yield return new WaitForSeconds(Alert_Time);
+
+        alertIsActive = !alertIsActive;
     }
 }
